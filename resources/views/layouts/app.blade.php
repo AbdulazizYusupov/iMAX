@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'SmartStore CRM')</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -44,6 +45,10 @@
                 <a href="{{ route('expenses.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors {{ request()->routeIs('expenses.*') ? 'bg-red-600 text-white shadow-lg shadow-red-500/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
                     <i class="fa-solid fa-wallet text-base w-5 text-center"></i>
                     <span>Xarajatlar</span>
+                </a>
+                <a href="{{ route('sales.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors {{ request()->routeIs('sales.*') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
+                    <i class="fa-solid fa-basket-shopping text-base w-5 text-center"></i>
+                    <span>Sotuvlar (Kassa)</span>
                 </a>
             </nav>
         </div>

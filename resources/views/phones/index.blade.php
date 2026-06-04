@@ -40,6 +40,7 @@
                     <th class="p-4">Sotuv Narxi</th>
                     <th class="p-4 text-center">Ustama (%)</th>
                     <th class="p-4">Kelgan vaqti</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ombor qoldig'i</th>
                     <th class="p-4 text-center">Holati</th>
                     <th class="p-4 text-right">Amallar</th>
                 </tr>
@@ -69,6 +70,19 @@
                     <td class="p-4 text-xs text-slate-400">
                         {{ $phone->arrival_date->format('d.m.Y H:i') }}
                     </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex flex-col">
+                            <!-- Omborda qolgan real soni / Jami olib kelingan soni -->
+                            <span class="text-sm font-semibold text-gray-900 dark:text-white">
+                                {{ $phone->current_stock }} / {{ $phone->quantity }} dona
+                            </span>
+                            <!-- Qancha sotilgani haqida kichik eslatma -->
+                            <span class="text-xs text-gray-500 dark:text-gray-400">
+                                Sotildi: {{ $phone->sold_quantity }} ta
+                            </span>
+                        </div>
+                    </td>
+
                     <td class="p-4 text-center">
                         @if($phone->status)
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Omborda</span>
@@ -207,6 +221,7 @@
         <form id="editForm" method="POST" class="space-y-4">
             @csrf
             @method('PUT')
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Kategoriya *</label>
@@ -233,7 +248,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">RAM</label>
                     <input type="text" id="edit_ram" name="ram" class="block w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -242,9 +257,12 @@
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Xotira (Storage)</label>
                     <input type="text" id="edit_storage" name="storage" class="block w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
+                <div>
+                    <label class="block text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1.5">Miqdori (Dona) *</label>
+                    <input type="number" id="edit_quantity" name="quantity" required min="1" class="block w-full px-3 py-2 bg-slate-950 border border-blue-900/50 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
             </div>
 
-            <!-- 🔥 TAHRIRLASH UCHUN NARXLAR VA FOIZ INPUTLARI -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/80">
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Kelgan Narxi *</label>
@@ -260,7 +278,6 @@
                 </div>
             </div>
 
-            <!-- 📅 KALENDAR SANA INPUTI (EDIT) -->
             <div>
                 <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Kelgan sana va vaqt *</label>
                 <input type="datetime-local" id="edit_arrival_date" name="arrival_date" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 custom-calendar">
@@ -316,12 +333,18 @@
         document.getElementById('edit_color').value = phone.color || '';
         document.getElementById('edit_ram').value = phone.ram || '';
         document.getElementById('edit_storage').value = phone.storage || '';
+
+        // 🔥 Mana shu qator qiymatni modal ochilganda eski holatini yuklab beradi:
+        document.getElementById('edit_quantity').value = phone.quantity || 1;
+
         document.getElementById('edit_cost_price').value = phone.cost_price;
         document.getElementById('edit_selling_price').value = phone.selling_price;
         document.getElementById('edit_margin_percent').value = phone.margin_percent;
 
         if (phone.formatted_arrival_date) {
             document.getElementById('edit_arrival_date').value = phone.formatted_arrival_date;
+        } else if (phone.arrival_date) {
+            document.getElementById('edit_arrival_date').value = phone.arrival_date.substring(0, 16);
         }
 
         document.getElementById('edit_status').checked = phone.status;

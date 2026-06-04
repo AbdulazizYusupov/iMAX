@@ -20,7 +20,7 @@
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 text-white text-2xl mb-4 shadow-lg shadow-blue-500/30">
                 <i class="fa-solid fa-mobile-screen-button animate-bounce"></i>
             </div>
-            <h2 class="text-3xl font-extrabold text-white tracking-tight">SmartStore</h2>
+            <h2 class="text-3xl font-extrabold text-white tracking-tight">IQuva</h2>
             <p class="text-sm text-slate-400 mt-2">Boshqaruv paneliga kirish</p>
         </div>
 
@@ -78,7 +78,7 @@
         </form>
 
         <div class="text-center mt-8 pt-6 border-t border-slate-700/40">
-            <p class="text-xs text-slate-500">&copy; {{ date('Y') }} SmartStore CRM. Barcha huquqlar himoyalangan.</p>
+            <p class="text-xs text-slate-500">&copy; {{ date('Y') }} IQuva CRM. Barcha huquqlar himoyalangan.</p>
         </div>
     </div>
 

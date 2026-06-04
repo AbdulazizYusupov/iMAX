@@ -2,57 +2,72 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable([
-    'category_id',
-    'name',
-    'color',
-    'imei',
-    'cost_price',
-    'selling_price',
-    'margin_percent',
-    'ram',
-    'storage',
-    'arrival_date',
-    'status'
-])]
 class Phone extends Model
 {
     use HasFactory;
 
-    protected function casts(): array
+    /**
+     * Massivli to'ldirishga ruxsat berilgan ustunlar ro'yxati.
+     * Yangi qo'shilgan 'quantity' va 'sold_quantity' shu yerga kiritildi.
+     */
+    protected $fillable = [
+        'category_id',
+        'name',
+        'color',
+        'imei',
+        'cost_price',
+        'selling_price',
+        'margin_percent',
+        'ram',
+        'storage',
+        'quantity',
+        'sold_quantity',
+        'arrival_date',
+        'status',
+    ];
+
+    /**
+     * Ma'lumotlar turini avtomat o'giring (Casting)
+     */
+    protected $casts = [
+        'arrival_date' => 'datetime',
+        'status' => 'boolean',
+        'cost_price' => 'decimal:2',
+        'selling_price' => 'decimal:2',
+        'quantity' => 'integer',
+        'sold_quantity' => 'integer',
+    ];
+
+    /**
+     * 🔥 VIRTUAL USTUN (Accessor)
+     * Omborda ayni damda qolgan real tovar sonini qaytaradi.
+     * Kod ichida xuddi ustundek $phone->current_stock ko'rinishida chaqiriladi.
+     */
+    public function getCurrentStockAttribute(): int
     {
-        return [
-            'status' => 'boolean',
-            'arrival_date' => 'datetime',
-            'cost_price' => 'float',
-            'selling_price' => 'float',
-        ];
+        // Jami kelgan sonidan sotilgan sonini ayiramiz
+        $stock = $this->quantity - $this->sold_quantity;
+
+        // Qoldiq manfiy (minus) bo'lib ketmasligini ta'minlaymiz
+        return $stock > 0 ? $stock : 0;
     }
 
     /**
-     * Model yuklanayotganda foizni avtomatik hisoblash tizimi
+     * Kategoriya bilan bog'liqlik (Har bitta telefon bitta kategoriyaga tegishli)
      */
-    protected static function booted()
-    {
-        static::saving(function ($phone) {
-            if ($phone->cost_price > 0) {
-                // Foizni hisoblash formulasi: ((Sotuv - Tan) / Tan) * 100
-                $profit = $phone->selling_price - $phone->cost_price;
-                $phone->margin_percent = round(($profit / $phone->cost_price) * 100);
-            }
-        });
-    }
-
-    /**
-     * Telefon qaysi kategoriyaga tegishli ekanligi (Many-to-One)
-     */
-    public function category(): BelongsTo
+    public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Sotuvlar tarixi bilan bog'liqlik (Bitta partiyadagi telefon modeli ko'p marta sotilishi mumkin)
+     */
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
     }
 }
