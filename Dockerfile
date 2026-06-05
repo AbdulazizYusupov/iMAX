@@ -27,5 +27,5 @@ RUN mkdir -p database storage/framework/cache/data storage/framework/sessions st
 
 EXPOSE 80
 
-# Konteyner yonganda migratsiya ishlaydi va server start oladi
-CMD php artisan migrate --force && /usr/bin/supervisord -c /etc/supervisord.conf
+# 🔥 Migratsiya bilan birga seeder ham majburiy ishga tushadi
+CMD php artisan migrate --force --seed && /usr/bin/supervisord -c /etc/supervisord.conf
