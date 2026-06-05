@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('color')->nullable();
 
-            // IMEI endi ->unique() EMAS, chunki bitta partiyada kelgan telefonlar bitta qatorda turadi
             $table->string('imei')->nullable();
 
             $table->decimal('cost_price', 15, 2);
@@ -24,9 +23,8 @@ return new class extends Migration
             $table->string('ram')->nullable();
             $table->string('storage')->nullable();
 
-            // 🔥 SONINI HISOBLASH UCHUN YANGI USTUNLAR
-            $table->integer('quantity')->default(1); // Olib kelingan jami soni
-            $table->integer('sold_quantity')->default(0); // Shu paytgacha sotilgan soni
+            $table->integer('quantity')->default(1);
+            $table->integer('sold_quantity')->default(0);
 
             $table->dateTime('arrival_date');
             $table->boolean('status')->default(true);
