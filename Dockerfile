@@ -1,17 +1,9 @@
 FROM php:8.4-fpm-alpine
 
-# Tizim paketlari, git, nginx va supervisor o'rnatish
-RUN apk add --no-cache \
-    nginx \
-    supervisor \
-    curl \
-    libpng-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    git
+# Tizim paketlari va Git o'rnatish
+RUN apk add --no-cache nginx supervisor curl libpng-dev libxml2-dev zip unzip git
 
-# Alpine tizimidagi standart PDO drayverlarini sozlash
+# PHP kengaytmalarini o'rnatish
 RUN docker-php-ext-install bcmath
 
 # Composer yuklash
@@ -23,13 +15,13 @@ COPY . .
 # Bog'liqliklarni o'rnatish
 RUN composer install --no-dev --optimize-autoloader
 
-# SQLite bazasini tekshirish va yaratish
-RUN mkdir -p database && touch database/database.sqlite
+# 🛠 MA'LUMOTLAR BAZASINI YARATISH VA RUXSAT BERISH
+RUN mkdir -p database storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs \
+    && touch database/database.sqlite \
+    && chmod -R 777 storage bootstrap/cache database \
+    && chown -R www-data:www-data storage bootstrap/cache database
 
-# Huquqlarni Nginx foydalanuvchisiga berish
-RUN chown -R www-data:www-data storage bootstrap/cache database
-
-# Render konfiguratsiyalarini nusxalash
+# Konfiguratsiyalarni nusxalash
 COPY .render/nginx.conf /etc/nginx/http.d/default.conf
 COPY .render/supervisord.conf /etc/supervisord.conf
 
