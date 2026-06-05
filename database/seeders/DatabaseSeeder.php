@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Factory-ni chetlab o'tib, to'g'ridan-to'g'ri model orqali yaratamiz
-        User::create([
-            'name' => 'Muhammaddiyor',
-            'username' => 'Iquva1',
-            'password' => '123', // Modelda 'hashed' kastingi borligi uchun o'zi shifrlanadi
-        ]);
+        // updateOrCreate — agar ulamoqchi bo'lgan username bazada bo'lsa yangilaydi, yo'q bo'lsa yaratadi.
+        User::updateOrCreate(
+            ['username' => 'admin'], // Tekshirish sharti
+            [
+                'name' => 'Muhammaddiyor',
+                'password' => Hash::make('admin123'), // Majburiy xavfsiz shifrlash
+            ]
+        );
     }
 }
